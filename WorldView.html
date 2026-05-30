@@ -662,10 +662,10 @@ function openModal(i){
           <div class="ld-box hate"><div class="ld-h">✕ 싫어하는 것</div><ul>${c.hates.map(h=>`<li>${h}</li>`).join('')}</ul></div>
         </div>
       </div>
-      <div class="block">
-        <div class="block-label">대표 대사</div>
-        <div class="bg-text" style="font-family:var(--serif-disp);font-style:italic;color:rgba(244,200,218,0.6)">준비중</div>
-      </div>
+      ${c.code==='A'?`<div class="block">
+        <div class="block-label">TMI</div>
+        <div class="bg-text">본명은 '아르센 드 아르카눔 세레스 발렌티노 크레센트'. 이름이 너무 길어 본인조차 뒷부분을 잊어버린 탓에, 그냥 '아르센'이라고만 소개한다.</div>
+      </div>`:''}
     </div>`;
   // spoiler
   const sp=modal.querySelector('.spoiler-toggle');

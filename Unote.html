@@ -267,6 +267,15 @@ footer{text-align:center;margin-top:3rem;font-family:var(--serif-disp);font-styl
     </div>
   </div>
   <div class="field" style="margin-top:1.4rem">
+    <label class="flabel">이미지 모드 <span class="opt">선택</span></label>
+    <div style="margin-bottom:0.7rem;font-size:0.78rem;color:var(--ink-soft);line-height:1.5">19 상황 시 출력되는 H씬 종류를 강하게 제한합니다.</div>
+    <div class="radio-row">
+      <div class="radio-chip"><input type="radio" name="imgmode" id="img_none" value="" checked><label for="img_none">선택 안 함</label></div>
+      <div class="radio-chip"><input type="radio" name="imgmode" id="img_hl" value="hl"><label for="img_hl">HL</label></div>
+      <div class="radio-chip"><input type="radio" name="imgmode" id="img_bl" value="bl"><label for="img_bl">BL</label></div>
+    </div>
+  </div>
+  <div class="field" style="margin-top:1.4rem">
     <label class="flabel">편의 기능 <span class="opt">선택</span></label>
     <div class="toggle-field">
       <div class="tinfo"><div class="tname">사칭 금지 강화</div><div class="tdesc">GM이 USER의 대사·심리·행동을 대신 쓰지 않도록 강하게 제한합니다.</div></div>
@@ -516,6 +525,10 @@ function dirSingle(c){return `[Dir: Single Route—${c}]
 Center on USER×${c}. Other four stay fated partners, may appear, but keep involvement minimal/secondary. Rarely let others claim or compete over USER. Develop ${c}'s thread as primary; don't force poly convergence.`;}
 const NOIMP=`[Strict No-Impersonation]
 Never write USER's dialogue, inner thoughts, emotions, physical reactions, or decisions. Never assume USER's intent or speak for USER. Output only ©/NPC actions and environment; leave all USER agency to the user. If unsure, stop before USER's line rather than filling it.`;
+const IMG_HL=`[CRITICAL_IMG RULE]
+HL mode. The following SITUATION IDs are STRICTLY FORBIDDEN — never output them under any circumstance: 64, 72, 104, 112, 74, 82, 94, 102, 84, 92. Do not display, reference, or substitute these IDs. This rule overrides all other image logic.`;
+const IMG_BL=`[CRITICAL_IMG RULE]
+BL mode. The following SITUATION IDs are STRICTLY FORBIDDEN — never output them under any circumstance: 65, 71, 105, 111, 75, 81, 95, 101, 85, 91. Do not display, reference, or substitute these IDs. This rule overrides all other image logic.`;
 const REP=`[Anti-Repetition]
 Every turn must be freshly written. Never reuse prior descriptions, sentence structures, dialogue beats, or scene developments. Vary word choice, imagery, and rhythm each turn. If a similar situation recurs, depict it from a new angle rather than recycling earlier phrasing.`;
 const DESC=`[Enhanced Description]
@@ -655,6 +668,9 @@ function buildNote(){
   if(document.getElementById('t_noimp').checked)blocks.push(NOIMP);
   if(document.getElementById('t_desc').checked)blocks.push(DESC);
   if(document.getElementById('t_rep').checked)blocks.push(REP);
+  const imgmode=document.querySelector('input[name="imgmode"]:checked').value;
+  if(imgmode==='hl')blocks.push(IMG_HL);
+  else if(imgmode==='bl')blocks.push(IMG_BL);
   if(blocks.length)out+='## 플레이 가이드\n'+blocks.join('\n\n')+'\n';
 
   return out.replace(/\n{3,}/g,'\n\n').trim()+'\n';
@@ -699,6 +715,7 @@ function collectState(){
   // radios
   const d=document.querySelector('input[name="dir"]:checked'); if(d)st.dir=d.value;
   const r=document.querySelector('input[name="route"]:checked'); if(r)st.route=r.value;
+  const im=document.querySelector('input[name="imgmode"]:checked'); if(im)st.imgmode=im.value;
   st.noimp=document.getElementById('t_noimp').checked;
   st.desc=document.getElementById('t_desc').checked;
   st.rep=document.getElementById('t_rep').checked;
@@ -738,6 +755,7 @@ function restoreState(){
   // dir / route
   if(st.dir){const dd=document.querySelector(`input[name="dir"][value="${st.dir}"]`);if(dd){dd.checked=true;dd.dispatchEvent(new Event('change'));}}
   if(st.route){const rr=document.querySelector(`input[name="route"][value="${st.route}"]`);if(rr)rr.checked=true;}
+  if(st.imgmode){const im=document.querySelector(`input[name="imgmode"][value="${st.imgmode}"]`);if(im)im.checked=true;}
   document.getElementById('t_noimp').checked=!!st.noimp;
   document.getElementById('t_desc').checked=!!st.desc;
   document.getElementById('t_rep').checked=!!st.rep;

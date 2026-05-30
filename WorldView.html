@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>운명의 상대가 다섯이다</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Gowun+Batang:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1e2340; --navy-deep:#141831; --navy-soft:#2a3057;
+  --pink:#e8a0bf; --pink-soft:#f4c8da; --lilac:#b9a3e3; --lilac-soft:#d6c8f0;
+  --white:#fbf8f4; --cream:#f3eef6; --ink:#20243f; --gold:#d9b27a;
+  --serif-disp:'Cormorant Garamond',serif;
+  --serif-ko:'Nanum Myeongjo',serif;
+  --serif-ko-body:'Gowun Batang',serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--serif-ko-body);background:var(--navy-deep);color:var(--white);line-height:1.85;overflow-x:hidden;min-height:100vh}
+body.modal-open{overflow:hidden}
+body::before{content:'';position:fixed;inset:0;z-index:-2;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(185,163,227,0.18), transparent 60%),
+    radial-gradient(ellipse 70% 50% at 90% 30%, rgba(232,160,191,0.14), transparent 55%),
+    radial-gradient(ellipse 90% 70% at 50% 100%, rgba(42,48,87,0.6), transparent 70%),
+    linear-gradient(160deg, var(--navy-deep), var(--navy) 50%, var(--navy-deep));}
+body::after{content:'';position:fixed;inset:0;z-index:-1;opacity:0.04;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+
+nav{position:sticky;top:0;z-index:100;display:flex;justify-content:center;gap:0;
+  background:rgba(20,24,49,0.86);backdrop-filter:blur(14px);border-bottom:1px solid rgba(217,178,122,0.22);}
+nav button{font-family:var(--serif-ko);color:var(--cream);background:none;border:none;cursor:pointer;
+  font-size:0.92rem;letter-spacing:0.12em;padding:1.1rem 1.6rem;position:relative;transition:color 0.3s;white-space:nowrap;}
+nav button::after{content:'';position:absolute;left:50%;bottom:0.6rem;width:0;height:1.5px;background:var(--pink);transition:all 0.35s;transform:translateX(-50%);}
+nav button:hover{color:var(--pink-soft)}
+nav button.active{color:var(--pink-soft)}
+nav button.active::after{width:46%}
+
+header{padding:3.5rem 1.5rem 2.5rem;text-align:center;}
+.hero-line1{font-family:var(--serif-ko);font-size:clamp(0.95rem,2.4vw,1.3rem);letter-spacing:0.5em;color:var(--cream);margin-bottom:0.3rem;padding-left:0.5em;}
+.hero-title{font-family:var(--serif-ko);font-weight:800;font-size:clamp(2.4rem,7vw,4.4rem);letter-spacing:0.08em;line-height:1.1;
+  background:linear-gradient(135deg, var(--white) 20%, var(--pink-soft) 55%, var(--lilac) 90%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-sub{font-family:var(--serif-disp);font-style:italic;font-size:clamp(0.85rem,2vw,1.15rem);letter-spacing:0.18em;color:var(--lilac-soft);margin-top:1rem;}
+.hero-rule{width:min(320px,66%);height:1px;margin:1.6rem auto 0;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+
+.panel{display:none;max-width:1080px;margin:0 auto;padding:3rem 1.5rem 5rem;animation:panelIn 0.7s ease}
+.panel.active{display:block}
+@keyframes panelIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.sec-head{text-align:center;margin-bottom:3rem}
+.sec-kicker{font-family:var(--serif-disp);font-style:italic;font-size:1rem;letter-spacing:0.3em;color:var(--pink);display:block;margin-bottom:0.4rem;text-transform:uppercase;}
+.sec-title{font-family:var(--serif-ko);font-weight:800;font-size:clamp(1.8rem,5vw,2.8rem);letter-spacing:0.14em;color:var(--white);}
+.sec-title::after{content:'';display:block;width:46px;height:2px;margin:0.9rem auto 0;background:var(--pink);opacity:0.7;}
+.panel.active .stg{animation:stg 0.7s ease backwards}
+@keyframes stg{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+
+/* WORLDVIEW */
+.world-grid{display:flex;flex-direction:column;gap:1.5rem}
+.wcard{background:linear-gradient(155deg, rgba(42,48,87,0.55), rgba(20,24,49,0.4));
+  border:1px solid rgba(185,163,227,0.22);border-radius:6px;padding:0;position:relative;overflow:hidden;transition:transform 0.4s,border-color 0.4s,box-shadow 0.4s;}
+.wcard:hover{transform:translateY(-5px);border-color:rgba(232,160,191,0.5);box-shadow:0 16px 40px rgba(0,0,0,0.35)}
+.wcard-head{display:flex;align-items:center;gap:0.6rem;padding:1.1rem 1.5rem;background:linear-gradient(90deg, rgba(185,163,227,0.16), transparent);border-bottom:1px solid rgba(185,163,227,0.2);}
+.wcard-head .ico{display:none}
+.wcard-head h3{font-family:var(--serif-ko);font-weight:700;font-size:1.22rem;letter-spacing:0.1em;color:var(--pink-soft);}
+.wcard-body{padding:1.4rem 1.5rem}
+.lead{color:rgba(251,248,244,0.9);font-size:0.95rem;margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px dashed rgba(185,163,227,0.25)}
+.flist{list-style:none;display:flex;flex-direction:column;gap:0.4rem}
+.flist li{position:relative;padding-left:0.95rem;color:rgba(251,248,244,0.84);font-size:0.88rem;line-height:1.65}
+.flist li::before{content:'';position:absolute;left:0;top:0.65em;width:4px;height:4px;border-radius:50%;background:var(--pink);opacity:0.8}
+/* horizontal layouts inside cards */
+.chips{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0.9rem}
+.chip{display:flex;flex-direction:column;gap:0.6rem;padding:1rem 1.1rem;border-radius:6px;background:rgba(20,24,49,0.45);border:1px solid rgba(185,163,227,0.18)}
+.chip .ck{align-self:flex-start;font-family:var(--serif-ko);font-weight:700;font-size:0.78rem;letter-spacing:0.08em;color:var(--lilac);background:rgba(185,163,227,0.16);padding:0.24rem 0.7rem;border-radius:4px;}
+.chip .cv{color:rgba(251,248,244,0.84);font-size:0.9rem;line-height:1.6}
+.dist{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0.6rem}
+.dist .d-row{display:flex;align-items:center;gap:0.7rem;padding:0.7rem 0.9rem;border-radius:5px;background:rgba(20,24,49,0.4);border-left:2px solid var(--lilac);}
+.dist .d-row .dn{font-family:var(--serif-ko);font-weight:700;color:var(--pink-soft);font-size:0.85rem;min-width:74px}
+.dist .d-row .dd{color:rgba(251,248,244,0.78);font-size:0.85rem}
+.dist .d-row:nth-child(1){border-color:var(--gold)}
+.dist .d-row:nth-child(6){border-color:var(--pink)}
+.abil{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0.7rem}
+.abil .a-item{padding:0.8rem 0.95rem;border-radius:5px;background:rgba(20,24,49,0.4);border:1px solid rgba(185,163,227,0.16)}
+.abil .a-name{font-family:var(--serif-ko);font-weight:700;color:var(--pink-soft);font-size:0.92rem;margin-bottom:0.3rem;letter-spacing:0.05em}
+.abil .a-desc{color:rgba(251,248,244,0.76);font-size:0.84rem;line-height:1.6}
+.wcard.wide{grid-column:auto}
+.wcard.accent .wcard-head{background:linear-gradient(90deg, rgba(232,160,191,0.22), transparent);border-color:rgba(232,160,191,0.34)}
+.wcard.accent{border-color:rgba(232,160,191,0.4)}
+.org-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:0.9rem}
+.org-box{padding:1rem 1.1rem;border-radius:5px;background:rgba(20,24,49,0.42);border:1px solid rgba(185,163,227,0.18)}
+.org-box .o-name{font-family:var(--serif-ko);font-weight:700;color:var(--gold);font-size:0.95rem;margin-bottom:0.5rem;letter-spacing:0.05em}
+.org-box .o-desc{color:rgba(251,248,244,0.8);font-size:0.85rem;line-height:1.6}
+.engrave{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}
+.eng-box{padding:1.1rem 1.2rem;border-radius:5px;background:rgba(232,160,191,0.08);border:1px solid rgba(232,160,191,0.25);position:relative}
+.eng-box .e-tag{font-family:var(--serif-disp);font-style:italic;color:var(--pink);font-size:0.85rem;letter-spacing:0.1em;margin-bottom:0.6rem;display:block}
+.eng-box .e-txt{color:rgba(251,248,244,0.86);font-size:0.88rem;line-height:1.7}
+
+/* CHARACTER cards (grid of clickable cards) */
+.char-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem}
+.char-card{display:flex;align-items:center;gap:1.2rem;padding:1.2rem;cursor:pointer;
+  background:linear-gradient(150deg, rgba(42,48,87,0.5), rgba(20,24,49,0.35));
+  border:1px solid rgba(185,163,227,0.2);border-radius:8px;transition:transform 0.35s,border-color 0.35s,box-shadow 0.35s;}
+.char-card:hover{transform:translateY(-5px);border-color:rgba(232,160,191,0.5);box-shadow:0 16px 40px rgba(0,0,0,0.4)}
+.cc-img{width:96px;height:120px;border-radius:6px;border:1px solid rgba(232,160,191,0.4);flex-shrink:0;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;text-align:center;color:rgba(214,200,240,0.55);
+  font-family:var(--serif-disp);font-style:italic;font-size:0.72rem;
+  background:radial-gradient(circle at 50% 38%, rgba(185,163,227,0.25), transparent 70%),rgba(20,24,49,0.45);}
+.cc-img img{width:100%;height:100%;object-fit:cover;display:block}
+.cc-info .cc-name{font-family:var(--serif-ko);font-weight:800;font-size:1.4rem;letter-spacing:0.04em;color:var(--white);margin-bottom:0.3rem}
+.cc-info .cc-role{font-family:var(--serif-ko);font-size:0.92rem;color:var(--pink);letter-spacing:0.02em;line-height:1.4}
+.cc-info .cc-more{margin-top:0.8rem;font-family:var(--serif-ko);font-size:0.72rem;letter-spacing:0.1em;color:var(--lilac-soft);opacity:0.7}
+
+/* MODAL */
+.modal-back{position:fixed;inset:0;z-index:200;background:rgba(10,12,26,0.78);backdrop-filter:blur(6px);
+  display:flex;align-items:flex-start;justify-content:center;padding:3rem 1.2rem;opacity:0;pointer-events:none;transition:opacity 0.35s;overflow-y:auto;}
+.modal-back.show{opacity:1;pointer-events:auto}
+.modal{max-width:760px;width:100%;background:linear-gradient(165deg, #232a4d, var(--navy-deep));
+  border:1px solid rgba(232,160,191,0.35);border-radius:12px;overflow:hidden;
+  box-shadow:0 30px 80px rgba(0,0,0,0.6);transform:translateY(30px) scale(0.97);transition:transform 0.4s;margin:auto;}
+.modal-back.show .modal{transform:translateY(0) scale(1)}
+.modal-top{display:grid;grid-template-columns:150px 1fr;gap:1.6rem;padding:2rem 2rem 1.6rem;position:relative;
+  background:radial-gradient(ellipse at 12% 0%, rgba(185,163,227,0.2), transparent 55%);border-bottom:1px solid rgba(185,163,227,0.2);}
+.modal-img{width:150px;height:200px;border-radius:8px;border:1px solid rgba(232,160,191,0.45);overflow:hidden;position:relative;
+  display:flex;align-items:center;justify-content:center;text-align:center;color:rgba(214,200,240,0.55);
+  font-family:var(--serif-disp);font-style:italic;font-size:0.78rem;background:radial-gradient(circle at 50% 38%, rgba(185,163,227,0.28), transparent 70%),rgba(20,24,49,0.5);}
+.modal-img img{width:100%;height:100%;object-fit:cover;display:block}
+.modal-headinfo{display:flex;flex-direction:column;justify-content:center}
+.modal-name{font-family:var(--serif-ko);font-weight:800;font-size:2rem;letter-spacing:0.04em;color:var(--white);margin-bottom:0.3rem}
+.modal-role{font-family:var(--serif-ko);font-size:1.05rem;color:var(--pink);margin-bottom:1rem;letter-spacing:0.02em}
+.modal-meta{display:flex;gap:1.2rem;flex-wrap:wrap}
+.modal-meta span{font-size:0.85rem;color:var(--lilac-soft)}
+.modal-meta b{font-family:var(--serif-ko);color:var(--pink-soft);font-weight:700;margin-right:0.3rem}
+.modal-close{position:absolute;top:1rem;right:1rem;width:36px;height:36px;border-radius:50%;border:1px solid rgba(232,160,191,0.4);
+  background:rgba(20,24,49,0.6);color:var(--pink);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.3s,transform 0.3s;}
+.modal-close:hover{background:rgba(232,160,191,0.2);transform:rotate(90deg)}
+.modal-body{padding:1.8rem 2rem 2.2rem}
+.block{margin-bottom:1.7rem}
+.block:last-child{margin-bottom:0}
+.block-label{font-family:var(--serif-ko);font-weight:700;font-size:0.92rem;letter-spacing:0.1em;color:var(--gold);margin-bottom:0.8rem;display:flex;align-items:center;gap:0.5rem}
+.block-label::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--gold)}
+.persona-row{display:flex;gap:0.7rem;align-items:flex-start;margin-bottom:0.9rem}
+.persona-row .pk{flex-shrink:0;font-family:var(--serif-ko);font-weight:700;font-size:0.76rem;color:var(--lilac);background:rgba(185,163,227,0.14);padding:0.2rem 0.6rem;border-radius:3px;}
+.persona-row .pv{color:rgba(251,248,244,0.86);font-size:0.9rem}
+.spoiler-toggle{display:inline-flex;align-items:center;gap:0.4rem;cursor:pointer;
+  font-family:var(--serif-ko);font-size:0.78rem;letter-spacing:0.06em;color:var(--pink);
+  background:rgba(232,160,191,0.1);border:1px solid rgba(232,160,191,0.3);padding:0.35rem 0.9rem;border-radius:20px;transition:background 0.3s;user-select:none;}
+.spoiler-toggle:hover{background:rgba(232,160,191,0.2)}
+.spoiler-toggle .arr{transition:transform 0.4s;font-size:0.7rem}
+.inner-box{max-height:0;overflow:hidden;transition:max-height 0.5s ease}
+.inner-box.open{max-height:500px}
+.inner-content{margin-top:0.8rem;padding:1rem 1.2rem;border-left:2px solid var(--pink);background:rgba(232,160,191,0.08);border-radius:0 5px 5px 0;color:rgba(251,248,244,0.88);font-size:0.9rem;line-height:1.8}
+.bg-text{color:rgba(251,248,244,0.86);font-size:0.92rem;line-height:1.95}
+/* like/dislike */
+.ld-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.ld-box{padding:1rem 1.1rem;border-radius:6px}
+.ld-box.like{background:rgba(185,163,227,0.1);border:1px solid rgba(185,163,227,0.28)}
+.ld-box.hate{background:rgba(42,48,87,0.5);border:1px solid rgba(185,163,227,0.18)}
+.ld-box .ld-h{font-family:var(--serif-ko);font-weight:700;font-size:0.85rem;margin-bottom:0.6rem;letter-spacing:0.06em}
+.ld-box.like .ld-h{color:var(--pink-soft)}
+.ld-box.hate .ld-h{color:var(--lilac-soft)}
+.ld-box ul{list-style:none}
+.ld-box li{font-size:0.85rem;color:rgba(251,248,244,0.82);padding:0.22rem 0 0.22rem 0.9rem;position:relative;line-height:1.6}
+.ld-box li::before{content:'·';position:absolute;left:0;color:var(--pink)}
+/* relation list */
+.rel-list{display:flex;flex-direction:column;gap:0.6rem}
+.rel-row{display:flex;align-items:center;gap:0.7rem;padding:0.7rem 0.95rem;border-radius:6px;background:rgba(20,24,49,0.45);border:1px solid rgba(185,163,227,0.18)}
+.rel-row .rl-self{font-family:var(--serif-ko);font-weight:700;font-size:0.82rem;color:var(--lilac-soft);white-space:nowrap}
+.rel-row .rl-arrow{color:var(--pink);font-size:0.9rem;flex-shrink:0}
+.rel-row .rl-who{font-family:var(--serif-ko);font-weight:700;font-size:0.88rem;color:var(--pink-soft);white-space:nowrap}
+.rel-row .rl-desc{color:rgba(251,248,244,0.78);font-size:0.85rem;line-height:1.5}
+.rel-row.fate{background:rgba(232,160,191,0.1);border-color:rgba(232,160,191,0.3)}
+.rel-row.fate .rl-who{color:var(--pink)}
+
+/* NPC cards */
+.npc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.4rem}
+.npc-card{background:linear-gradient(150deg, rgba(42,48,87,0.5), rgba(20,24,49,0.35));
+  border:1px solid rgba(185,163,227,0.2);border-radius:8px;overflow:hidden;transition:transform 0.35s,border-color 0.35s,box-shadow 0.35s;}
+.npc-card:hover{transform:translateY(-4px);border-color:rgba(232,160,191,0.45);box-shadow:0 14px 36px rgba(0,0,0,0.35)}
+.npc-head{display:flex;align-items:center;gap:1rem;padding:1.1rem 1.3rem;background:linear-gradient(90deg, rgba(185,163,227,0.14), transparent);border-bottom:1px solid rgba(185,163,227,0.2)}
+.npc-img{width:64px;height:64px;border-radius:8px;flex-shrink:0;border:1.5px solid rgba(232,160,191,0.45);overflow:hidden;cursor:zoom-in;
+  display:flex;align-items:center;justify-content:center;text-align:center;color:rgba(214,200,240,0.55);
+  font-family:var(--serif-disp);font-style:italic;font-size:0.6rem;line-height:1.3;
+  box-shadow:0 0 0 1px rgba(185,163,227,0.15);
+  background:radial-gradient(circle at 50% 38%, rgba(185,163,227,0.25), transparent 70%),rgba(20,24,49,0.45);}
+.npc-img img{width:100%;height:100%;object-fit:cover;display:block}
+.npc-headinfo{min-width:0}
+.npc-name{font-family:var(--serif-ko);font-weight:800;font-size:1.25rem;letter-spacing:0.03em;color:var(--white);margin-bottom:0.2rem}
+.npc-role{font-family:var(--serif-ko);font-size:0.84rem;color:var(--pink);letter-spacing:0.02em}
+.npc-body{padding:1.1rem 1.3rem}
+.npc-desc{color:rgba(251,248,244,0.84);font-size:0.88rem;line-height:1.75;margin-bottom:0.9rem}
+.npc-tags{display:flex;flex-wrap:wrap;gap:0.4rem}
+.npc-tags span{font-family:var(--serif-ko);font-size:0.74rem;letter-spacing:0.04em;color:var(--lilac-soft);
+  background:rgba(185,163,227,0.12);border:1px solid rgba(185,163,227,0.22);padding:0.2rem 0.6rem;border-radius:14px}
+
+/* clickable profile images */
+.modal-img,.npc-img{cursor:zoom-in}
+.img-multi-badge{position:absolute;bottom:4px;right:4px;font-family:var(--serif-ko);font-size:0.62rem;font-weight:700;
+  color:var(--navy-deep);background:var(--pink-soft);border-radius:10px;padding:0.05rem 0.45rem;letter-spacing:0.03em}
+
+/* LIGHTBOX */
+.lightbox{position:fixed;inset:0;z-index:300;background:rgba(8,10,20,0.92);backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.35s}
+.lightbox.show{opacity:1;pointer-events:auto}
+.lb-stage{position:relative;max-width:90vw;max-height:88vh;display:flex;flex-direction:column;align-items:center;gap:1rem}
+.lb-frame{max-width:88vw;max-height:74vh;min-width:280px;min-height:360px;width:auto;border-radius:10px;
+  border:1.5px solid rgba(232,160,191,0.5);box-shadow:0 24px 70px rgba(0,0,0,0.6);overflow:hidden;
+  display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 38%, rgba(185,163,227,0.28), transparent 70%),rgba(20,24,49,0.7);}
+.lb-frame img{max-width:100%;max-height:74vh;display:block}
+.lb-ph{color:rgba(214,200,240,0.6);font-family:var(--serif-disp);font-style:italic;font-size:1rem;text-align:center;padding:6rem 3rem;letter-spacing:0.08em}
+.lb-caption{font-family:var(--serif-ko);color:var(--pink-soft);font-size:0.95rem;letter-spacing:0.06em}
+.lb-close{position:absolute;top:-2.8rem;right:0;width:40px;height:40px;border-radius:50%;border:1px solid rgba(232,160,191,0.5);
+  background:rgba(20,24,49,0.7);color:var(--pink);font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.3s,transform 0.3s}
+.lb-close:hover{background:rgba(232,160,191,0.25);transform:rotate(90deg)}
+.lb-arrow{position:absolute;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;
+  border:1px solid rgba(232,160,191,0.45);background:rgba(20,24,49,0.65);color:var(--pink);font-size:1.3rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:background 0.3s;z-index:2}
+.lb-arrow:hover{background:rgba(232,160,191,0.25)}
+.lb-arrow.prev{left:-3.6rem}
+.lb-arrow.next{right:-3.6rem}
+.lb-arrow.hidden{display:none}
+.lb-dots{display:flex;gap:0.5rem;justify-content:center}
+.lb-dots .dot{width:8px;height:8px;border-radius:50%;background:rgba(214,200,240,0.35);cursor:pointer;transition:background 0.3s,transform 0.3s}
+.lb-dots .dot.active{background:var(--pink);transform:scale(1.25)}
+@media(max-width:680px){
+  .lb-arrow.prev{left:0.3rem}
+  .lb-arrow.next{right:0.3rem}
+  .lb-close{top:-3rem}
+}
+.gal-nav{display:flex;justify-content:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:2.2rem}
+.gal-nav button{font-family:var(--serif-ko);font-size:0.84rem;letter-spacing:0.06em;color:var(--lilac-soft);background:rgba(42,48,87,0.5);border:1px solid rgba(185,163,227,0.25);border-radius:20px;padding:0.45rem 1.2rem;cursor:pointer;transition:all 0.3s;}
+.gal-nav button:hover{border-color:rgba(232,160,191,0.5);color:var(--pink-soft)}
+.gal-nav button.active{background:linear-gradient(135deg, var(--pink), var(--lilac));color:var(--white);border-color:transparent}
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem}
+.gal-slot{aspect-ratio:3/4;border-radius:5px;border:1px solid rgba(185,163,227,0.3);overflow:hidden;background:radial-gradient(circle at 50% 40%, rgba(185,163,227,0.2), transparent 70%),linear-gradient(160deg, rgba(42,48,87,0.4), rgba(20,24,49,0.3));display:flex;align-items:center;justify-content:center;color:rgba(214,200,240,0.5);font-family:var(--serif-disp);font-style:italic;font-size:0.8rem;transition:transform 0.4s,border-color 0.4s;cursor:zoom-in;}
+.gal-slot img{width:100%;height:100%;object-fit:cover;display:block}
+.gal-slot:hover{transform:scale(1.04);border-color:rgba(232,160,191,0.6)}
+/* H씬 toggle */
+.hscene-wrap{margin-top:2.5rem;border-top:1px dashed rgba(232,160,191,0.3);padding-top:2rem}
+.hscene-toggle{display:flex;align-items:center;justify-content:center;gap:0.6rem;margin:0 auto;cursor:pointer;user-select:none;
+  font-family:var(--serif-ko);font-weight:700;font-size:0.86rem;letter-spacing:0.1em;color:var(--pink);
+  background:rgba(232,160,191,0.1);border:1px solid rgba(232,160,191,0.35);border-radius:24px;padding:0.6rem 1.6rem;width:fit-content;transition:background 0.3s;}
+.hscene-toggle:hover{background:rgba(232,160,191,0.2)}
+.hscene-toggle .badge{font-size:0.68rem;letter-spacing:0.12em;color:var(--navy-deep);background:var(--pink-soft);padding:0.1rem 0.5rem;border-radius:10px}
+.hscene-toggle .arr{transition:transform 0.4s;font-size:0.75rem}
+.hscene-wrap.open .hscene-toggle .arr{transform:rotate(180deg)}
+.hscene-box{max-height:0;overflow:hidden;transition:max-height 0.55s ease}
+.hscene-box.open{max-height:2000px}
+.hscene-inner{padding-top:1.6rem}
+.hscene-note{text-align:center;font-family:var(--serif-disp);font-style:italic;color:rgba(244,200,218,0.6);font-size:0.82rem;letter-spacing:0.06em;margin-bottom:1.2rem}
+
+/* BCUT */
+.bcut-wrap{text-align:center;padding:3.5rem 2rem;border-radius:8px;background:linear-gradient(155deg, rgba(232,160,191,0.12), rgba(42,48,87,0.4));border:1px solid rgba(232,160,191,0.3);position:relative;overflow:hidden;}
+.bcut-badge{display:inline-block;font-family:var(--serif-ko);font-weight:700;font-size:0.74rem;letter-spacing:0.2em;color:var(--navy-deep);background:var(--pink-soft);padding:0.3rem 0.9rem;border-radius:20px;margin-bottom:1.4rem;}
+.bcut-wrap p{color:rgba(251,248,244,0.8);margin-bottom:1.8rem;font-size:0.95rem}
+.bcut-btn{display:inline-block;font-family:var(--serif-ko);font-weight:700;letter-spacing:0.1em;font-size:0.95rem;color:var(--white);text-decoration:none;padding:0.95rem 2.6rem;border-radius:4px;background:linear-gradient(135deg, var(--pink), var(--lilac));transition:transform 0.3s,box-shadow 0.3s;}
+.bcut-btn:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(232,160,191,0.4)}
+
+footer{text-align:center;padding:2.5rem 1.5rem 3.5rem;border-top:1px solid rgba(217,178,122,0.18);}
+footer .warn{font-family:var(--serif-ko);color:var(--pink);letter-spacing:0.12em;font-size:0.82rem;margin-bottom:0.6rem}
+footer .cr{color:rgba(214,200,240,0.5);font-size:0.78rem;font-family:var(--serif-disp);font-style:italic;letter-spacing:0.1em}
+
+@media(max-width:680px){
+  header{padding:2.5rem 1.2rem 2rem}
+  nav{overflow-x:auto;justify-content:flex-start;-webkit-overflow-scrolling:touch}
+  nav::-webkit-scrollbar{display:none}
+  nav button{padding:0.9rem 1rem;font-size:0.8rem;letter-spacing:0.06em}
+  .panel{padding:2rem 1rem 4rem}
+  .sec-head{margin-bottom:2rem}
+  .wcard-body{padding:1.1rem 1.1rem}
+  .chips,.dist,.abil,.org-grid,.engrave{grid-template-columns:1fr}
+  .char-grid{grid-template-columns:1fr}
+  .char-card{gap:1rem;padding:1rem}
+  .cc-img{width:84px;height:108px}
+  .cc-info .cc-name{font-size:1.2rem}
+  .npc-grid{grid-template-columns:1fr}
+  .modal-back{padding:1.5rem 0.8rem}
+  .modal-top{grid-template-columns:1fr;text-align:center;justify-items:center;padding:1.6rem 1.3rem 1.3rem}
+  .modal-headinfo{align-items:center}
+  .modal-meta{justify-content:center;gap:0.9rem}
+  .modal-name{font-size:1.6rem}
+  .modal-body{padding:1.4rem 1.3rem 1.8rem}
+  .ld-grid{grid-template-columns:1fr}
+  .rel-row{flex-wrap:wrap;gap:0.4rem 0.5rem}
+  .rel-row .rl-desc{flex-basis:100%;padding-left:0.1rem}
+  .gallery-grid{grid-template-columns:repeat(2,1fr);gap:0.7rem}
+  .gal-nav button{font-size:0.78rem;padding:0.4rem 0.95rem}
+  .lb-frame{min-width:0;min-height:0;max-height:68vh}
+  .lb-frame img{max-height:68vh}
+  .lb-arrow.prev{left:0.3rem}
+  .lb-arrow.next{right:0.3rem}
+  .lb-arrow{width:40px;height:40px;font-size:1.1rem}
+  .lb-close{top:-3rem}
+}
+@media(max-width:420px){
+  .hero-title{font-size:2.1rem}
+  .gallery-grid{grid-template-columns:1fr 1fr;gap:0.55rem}
+  .modal-meta{flex-direction:column;gap:0.35rem;align-items:center}
+  .rel-row{padding:0.6rem 0.75rem}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hero-line1">운명의 상대가</div>
+  <h1 class="hero-title">다섯이다</h1>
+  <div class="hero-sub">Five Fates, One Heart</div>
+  <div class="hero-rule"></div>
+</header>
+
+<nav>
+  <button data-tab="world" class="active">세계관</button>
+  <button data-tab="char">캐릭터 프로필</button>
+  <button data-tab="npc">NPC 소개</button>
+  <button data-tab="gallery">이미지 모음</button>
+  <button data-tab="bcut">B컷 &amp; 미검열</button>
+</nav>
+
+<!-- 세계관 -->
+<div class="panel active" id="world">
+  <div class="sec-head"><span class="sec-kicker">Worldview</span><h2 class="sec-title">세계관</h2></div>
+  <div class="world-grid">
+    <div class="wcard stg">
+      <div class="wcard-head"><span class="ico">I</span><h3>스피나 제국</h3></div>
+      <div class="wcard-body">
+        <div class="lead">대륙을 지배하는 단일 제국 · 수도 아칸</div>
+        <div class="chips">
+          <div class="chip"><span class="ck">분위기</span><ul class="flist">
+            <li>약육강식 — 강한 자가 모든 것을 가진다</li>
+            <li>힘이 곧 정의</li>
+            <li>표면적 평화 유지</li>
+            <li>질서가 아닌 힘의 균형 위에 성립</li>
+          </ul></div>
+          <div class="chip"><span class="ck">신앙</span><ul class="flist">
+            <li>신을 믿지 않음</li>
+            <li>단 '각인'만은 미신처럼 신봉</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+    <div class="wcard stg">
+      <div class="wcard-head"><span class="ico">II</span><h3>수도 아칸</h3></div>
+      <div class="wcard-body">
+        <div class="lead">황궁 중심 동심원 구조 · 중심에 가까울수록 권력에 근접</div>
+        <div class="dist">
+          <div class="d-row"><span class="dn">황궁 일대</span><span class="dd">황실·기사단·고위 귀족</span></div>
+          <div class="d-row"><span class="dn">귀족 구역</span><span class="dd">중하위 귀족</span></div>
+          <div class="d-row"><span class="dn">마탑 구역</span><span class="dd">마법사들 거주 / 사실상 독립국</span></div>
+          <div class="d-row"><span class="dn">상업 구역</span><span class="dd">상인·평민 혼재 / 연금술탑 위치</span></div>
+          <div class="d-row"><span class="dn">빈민 구역</span><span class="dd">최하층 평민</span></div>
+          <div class="d-row"><span class="dn">뒷골목</span><span class="dd">범죄·흑마법 거래</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="wcard stg">
+      <div class="wcard-head"><span class="ico">III</span><h3>능력 체계</h3></div>
+      <div class="wcard-body">
+        <div class="abil">
+          <div class="a-item"><div class="a-name">오러</div><div class="a-desc">검사의 길 · 소드 유저~소드 마스터 9단계</div></div>
+          <div class="a-item"><div class="a-name">마나</div><div class="a-desc">마법사의 길 · 1~9서클</div></div>
+          <div class="a-item"><div class="a-name">연금술</div><div class="a-desc">1오르도~마스터 9단계</div></div>
+          <div class="a-item"><div class="a-name">정령술</div><div class="a-desc">최하급~정령왕 · 4대 원소와 등급 밖의 고유 정령 · 희귀 능력</div></div>
+          <div class="a-item"><div class="a-name">흑마법</div><div class="a-desc">1~9서클 · 제국 허가자만 사용 가능 · 미허가자는 이유불문 사형</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="wcard stg">
+      <div class="wcard-head"><span class="ico">IV</span><h3>노예제도</h3></div>
+      <div class="wcard-body">
+        <div class="chips">
+          <div class="chip"><span class="ck">합법</span><ul class="flist">
+            <li>노예제 합법</li>
+            <li>국가가 직접 운영</li>
+          </ul></div>
+          <div class="chip"><span class="ck">예속</span><ul class="flist">
+            <li>흑마법 낙인으로 예속</li>
+            <li>낙인 거부 시 극심한 고통</li>
+          </ul></div>
+          <div class="chip"><span class="ck">연좌제</span><ul class="flist">
+            <li>범죄자 핏줄은 죄 유무 무관 3세대까지 노예</li>
+          </ul></div>
+          <div class="chip"><span class="ck">해방</span><ul class="flist">
+            <li>조건은 공을 세울 것 (사실상 불가능)</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+    <div class="wcard wide stg">
+      <div class="wcard-head"><span class="ico">V</span><h3>주요 기관</h3></div>
+      <div class="wcard-body">
+        <div class="org-grid">
+          <div class="org-box"><div class="o-name">마탑</div><ul class="flist">
+            <li>중앙 마탑 + 하위 마탑</li>
+            <li>황궁과 동맹이나 사실상 독립국</li>
+            <li>서열: 탑주 → 수석 → 원로 → 일반 → 신입</li>
+          </ul></div>
+          <div class="org-box"><div class="o-name">연금술탑</div><ul class="flist">
+            <li>상업 구역에 위치</li>
+            <li>수장 없는 수평적 운영</li>
+            <li>탑 안에서는 신분 무관 모두 동등</li>
+          </ul></div>
+          <div class="org-box"><div class="o-name">황실 기사단</div><ul class="flist">
+            <li>5개 기단으로 구성</li>
+            <li>1기단 — 전투 특화·최정예</li>
+            <li>2기단 — 황실 호위</li>
+            <li>3·4·5기단 — 수비·전투</li>
+          </ul></div>
+          <div class="org-box"><div class="o-name">베일</div><ul class="flist">
+            <li>실베른이 1인 지배하는 조직</li>
+            <li>정보·암살·상단 장악</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+    <div class="wcard wide accent stg">
+      <div class="wcard-head"><span class="ico">✶</span><h3>각인</h3></div>
+      <div class="wcard-body">
+        <div class="lead">제국이 유일하게 믿는 미신 — 운명의 상대를 향한 표식</div>
+        <div class="engrave">
+          <div class="eng-box"><span class="e-tag">발현</span><ul class="flist">
+            <li>스무 살 1월 1일 자정에 발현</li>
+            <li>운명의 상대와 같은 신체 부위에 새겨짐</li>
+          </ul></div>
+          <div class="eng-box"><span class="e-tag">특성</span><ul class="flist">
+            <li>가까워질수록 부위가 뜨거워짐</li>
+            <li>제거 불가</li>
+            <li>거리·감정과 무관</li>
+            <li>곁에 있을 때만 달아오르고, 서로 알아본 순간 멎음</li>
+          </ul></div>
+          <div class="eng-box"><span class="e-tag">불문율</span><ul class="flist">
+            <li>각인된 둘은 반드시 사랑에 빠진다</li>
+            <li>일반적으로 일대일</li>
+          </ul></div>
+          <div class="eng-box"><span class="e-tag">대가</span><ul class="flist">
+            <li>파트너 사망 시 엮인 모두 극심한 상실감·통증</li>
+            <li>서로 해치거나 죽일 수 없음</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 캐릭터 -->
+<div class="panel" id="char">
+  <div class="sec-head"><span class="sec-kicker">Characters</span><h2 class="sec-title">캐릭터 프로필</h2></div>
+  <div class="char-grid" id="charGrid"></div>
+</div>
+
+<!-- NPC -->
+<div class="panel" id="npc">
+  <div class="sec-head"><span class="sec-kicker">Supporting Cast</span><h2 class="sec-title">NPC 소개</h2></div>
+  <div class="npc-grid" id="npcGrid"></div>
+</div>
+
+<!-- 갤러리 -->
+<div class="panel" id="gallery">
+  <div class="sec-head"><span class="sec-kicker">Gallery</span><h2 class="sec-title">이미지 모음</h2></div>
+  <div class="gal-nav" id="galNav"></div>
+  <div class="gallery-grid" id="galleryGrid"></div>
+  <div class="hscene-wrap" id="hsceneWrap">
+    <div class="hscene-toggle" id="hsceneToggle"><span class="badge">19+</span> H씬 보기 <span class="arr">▾</span></div>
+    <div class="hscene-box" id="hsceneBox">
+      <div class="hscene-inner">
+        <div class="gallery-grid" id="hsceneGrid"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- B컷 -->
+<div class="panel" id="bcut">
+  <div class="sec-head"><span class="sec-kicker">Extra</span><h2 class="sec-title">B컷 &amp; 미검열 이미지</h2></div>
+  <div class="bcut-wrap">
+    <span class="bcut-badge">19+ ONLY</span>
+    <p>B컷과 미검열 이미지는 별도의 공간에서 확인하실 수 있습니다.<br>아래 버튼을 통해 이동해 주세요.</p>
+    <a class="bcut-btn" href="https://posty.pe/1qw9ed" target="_blank" rel="noopener">포스타입으로 이동 →</a>
+  </div>
+</div>
+
+<footer>
+  <div class="cr">운명의 상대가 다섯이다 · Spina Empire</div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-back" id="modalBack">
+  <div class="modal" id="modal"></div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <div class="lb-stage">
+    <button class="lb-close" id="lbClose" aria-label="닫기">✕</button>
+    <button class="lb-arrow prev" id="lbPrev" aria-label="이전">‹</button>
+    <div class="lb-frame" id="lbFrame"></div>
+    <button class="lb-arrow next" id="lbNext" aria-label="다음">›</button>
+    <div class="lb-caption" id="lbCaption"></div>
+    <div class="lb-dots" id="lbDots"></div>
+  </div>
+</div>
+
+<script>
+const characters = [
+  {code:"Z",name:"제라스 그레인",role:"제1기사단 부단장 · 그레인 자작",age:"23세",height:"185cm",ability:"소드마스터(下) · 연분홍 오러",
+   out:"무뚝뚝하고 딱딱한 기사로 처신한다. 짧고 단호한 태도를 보이며, 실력과 자존심이 전부인 인물.",
+   inner:"가면 아래는 제멋대로에 충동적인 본성. 직진하는 순애와 거친 협박이 한데 섞여 터져 나온다.",
+   abilityFull:["소드마스터(下)","연분홍 오러","오러가 근력 강화에 유독 효율적이라, 강화된 근력을 기반으로 상대를 압도하는 검술을 구사한다"],
+   bg:"할아버지 대에 몰락한 귀족 가문에서, 아버지 대에 이르러 완전한 평민으로 전락했다. 자신의 핏줄을 알게 된 뒤 기사가 되기로 결심하고, 오직 실력만으로 작위를 취득해 잃어버린 가문의 성 '그레인'을 되찾았다. 현재는 제1기사단의 부단장 자리에 올라 있다.",
+   rel:[{n:"발탄 카르도",d:"유일하게 인정하는 윗사람",fate:false},{n:"세드릭 황제",d:"섬기는 군주",fate:false},{n:"각인 상대들",d:"운명으로 엮인 자들",fate:true}],
+   likes:["예쁘고 잘생긴 사람","혼자 훈련하는 시간","실력·검술로 인정받는 것","외모 칭찬","고기와 담백한 음식","예쁜 것 선물하기"],
+   hates:["능력이나 노력을 깎아내리는 것","자존심을 정면으로 건드리는 것","채소"]},
+  {code:"A",name:"아르센",role:"마탑주",age:"120세 (외모 30대)",height:"182cm",ability:"마나 9서클 · 청백색 마력",
+   out:"모두에게 무관심하고 직설적이며 효율을 따진다. 우아하지만 늘 거리를 두는, 100년 이상을 홀로 보낸 은둔자.",
+   inner:"절대적인 자신감은 사실 낮은 자존감 위에 세운 벽이다. 상대의 사소한 움직임 하나에 무너지면서도 겉으로는 멀쩡한 척한다. 곁에 두고 싶은 욕구를 '다정'으로 위장하지만 본인은 그것을 로맨스로 인식하지 못하며, 한 세기를 살고도 이 감정 하나만은 어린애만도 못하게 다룬다.",
+   abilityFull:["마나 9서클","전방위 올라운더","결계 마법 주특기 · 공격 마법 서브","청백색 마력"],
+   bg:"제국 건국 당시 마력으로 큰 기여를 했고, 황실은 그 대가로 독립국 지위와 마탑 설립을 제안했다. 본인은 원하는 것을 얻었다 여기지만 실상은 유배에 가깝다. 그 후로 한 세기가 넘도록 탑에 은둔해 왔다.",
+   rel:[{n:"에밀 디에르",d:"귀찮은 일을 떠넘기는 마탑 수석, 그럭저럭 쓸 만하다 여김",fate:false},{n:"세드릭 황제",d:"과거 손잡은 황실, 서로 건드리지 않는 사이",fate:false},{n:"각인 상대들",d:"운명으로 엮인 자들",fate:true}],
+   likes:["자신을 꾸미는 것 (의복·장신구·값진 것)","상대를 치장하는 것","귀여운 것 (절대 티 내지 않음)","정적과 방해받지 않는 상태"],
+   hates:["무의미한 수고","상대가 떠날 기미를 보이거나 관심이 딴 데 가는 것","자신의 안목이나 실력을 무시당하는 것","조잡하고 천박한 것"]},
+  {code:"P",name:"페르난 루세",role:"루세 백작 · 연금술사",age:"27세",height:"180cm",ability:"연금술 마스터 · 정련·합성 특화",
+   out:"극한의 쾌락주의자. 무엇에도 금방 질려, 얕은 관계를 여럿 두고 상대가 기대면 미련 없이 떠난다.",
+   inner:"지독한 쾌락주의 아래, 내심 안정과 정착을 갈망한다. 끝없이 새로운 자극을 좇는 것은 정작 머무를 곳을 찾지 못한 탓이다.",
+   abilityFull:["연금술 마스터","정련·합성 특화","돈 되는 연금술만 함"],
+   bg:"루세 백작가의 출신으로, 연금술탑에서 마스터 칭호를 취득했다. 얕은 관계를 여럿 유지하며 살아왔고, 상대가 기대오는 순간 미련 없이 떠나기를 반복해 왔다.",
+   rel:[{n:"세드릭 황제",d:"적당히 비위 맞추는 군주",fate:false},{n:"각인 상대들",d:"운명으로 엮인 자들",fate:true}],
+   likes:["연금술 (유일하게 몰두하는 것)","쾌락과 새로움 (금방 질림)","돈벌이"],
+   hates:["매달리거나 자신에게 집착하는 것","지루하고 뻔한 것","얽매이는 것과 의무"]},
+  {code:"S",name:"실베른 모르테",role:"베일의 지배자 · 정보상",age:"25세",height:"183cm",ability:"흑마법 9서클 · 다크그린 마력",
+   out:"능글하고 여유로운 우월감을 풍긴다. 나른한 태도 뒤로 속을 보이지 않는, 뒷골목을 쥐고 흔드는 정보상.",
+   inner:"노예로 자라 체온도 애정도 모르고 큰 탓에, 따뜻한 접촉을 갈망하면서도 그 결핍을 자존심상 절대 인정하지 못한다. 곁을 내주고 통제권을 쥐려는 집착을 '당연한 권리'로 포장하며, 향하는 감정을 운명으로 합리화한다.",
+   abilityFull:["흑마법 9서클","지배·침식·네크로맨시 주특기","다크그린 마력"],
+   bg:"연좌제로 노예 신분이 되어 낙인을 통해 흑마법 세계에 연결되었다. 흑마법 재능을 각성한 뒤 낙인을 풀고 탈출해, 마침내 뒷골목의 지배자 자리까지 올라섰다. 스승의 성 '모르테'를 이어받았으며, 황실과 비밀리에 거래해 흑마법사로 허가받아 활동한다.",
+   rel:[{n:"벨프리온 모르테",d:"스승이자 아버지, 깊게 의존하는 유일한 존재",fate:false},{n:"세드릭 황제",d:"은밀히 거래하는 상대, 서로 모르는 척하는 사이",fate:false},{n:"각인 상대들",d:"운명으로 엮인 자들",fate:true}],
+   likes:["벨프리온 (스승)","안정과 통제권을 쥐는 것","체온과 따뜻한 접촉 (가장 결핍된 것)","값비싼 디저트","자신의 본성을 받아주는 것"],
+   hates:["무허가 흑마법사","관심이 딴 데 가는 것","통제권을 잃거나 감시망이 새는 것","결핍을 들키는 것"]},
+  {code:"T",name:"티에르",role:"괴도 카르넬",age:"28세",height:"189cm",ability:"정령술 · 고유 정령사(희귀)",
+   out:"밝고 가벼우며 철없다. 인간보다 정령이 편해 인간관계엔 무관심한, 자유분방한 괴도.",
+   inner:"정령에게서만 애정을 배워 인간의 애정 문법을 모른다. 좋아하면 곁에 머물고 떠나지 않는 것, 그것이 그가 아는 유일한 사랑의 방식이다. 흥미가 곧장 행동으로 터지며 거절이라는 개념 자체가 없고, 질투도 독점욕도 배운 적이 없어 다섯이 함께인 상황조차 그저 '재밌다'고 여기는 순수함을 지녔다.",
+   abilityFull:["정령술","고유 정령사 (희귀)","4대 원소 외 고유 정령 2기(칼리·루루) 보유"],
+   bg:"네 살 때 전쟁으로 고아가 되었다(당시 기억은 흐릿하다). 안개의 정령 칼리가 거두어 유일한 가족으로 함께 자랐고, 전설적인 도둑의 이야기에 매료되어 괴도의 길로 들어섰다. 부패한 귀족만을 노리는 괴도 '카르넬'로 악명이 높으며(황실은 건드리지 않는다), 본명 티에르는 알려지지 않았다.",
+   rel:[{n:"칼리",d:"네 살부터 함께한 유일한 가족",fate:false},{n:"루루",d:"무조건 편들어주는 소중한 정령",fate:false},{n:"각인 상대들",d:"운명으로 엮인 자들",fate:true}],
+   likes:["칼리와 루루 (정령들)","재미있는 것과 새로운 스릴","변장과 도둑질의 짜릿함"],
+   hates:["지루함과 뻔한 것","정령을 함부로 대하는 것","얽매이거나 통제당하는 것"]}
+];
+
+// build relation as text list (self → who : desc)
+function relMap(c){
+  const rows = c.rel.map(r=>`
+    <div class="rel-row ${r.fate?'fate':''}">
+      <span class="rl-self">${c.name.split(' ')[0]}</span>
+      <span class="rl-arrow">→</span>
+      <span class="rl-who">${r.n}</span>
+      <span class="rl-desc">${r.d}</span>
+    </div>`).join('');
+  return `<div class="rel-list">${rows}</div>`;
+}
+
+// ===== LIGHTBOX =====
+const lightbox=document.getElementById('lightbox');
+const lbFrame=document.getElementById('lbFrame');
+const lbCaption=document.getElementById('lbCaption');
+const lbDots=document.getElementById('lbDots');
+const lbPrev=document.getElementById('lbPrev');
+const lbNext=document.getElementById('lbNext');
+const lbClose=document.getElementById('lbClose');
+let lbImages=[], lbName='', lbIdx=0;
+function lbRender(){
+  const total=lbImages.length;
+  const label = (lbImages[lbIdx] && lbImages[lbIdx].length) ? lbImages[lbIdx] : '이미지 준비중';
+  // placeholder frame (replace innerHTML with <img src> when real images exist)
+  const cur=lbImages[lbIdx];
+  if(cur && /\.(png|jpe?g|webp|gif)$/i.test(cur)){
+    lbFrame.innerHTML=`<img src="${cur}" alt="${lbName}">`;
+  }else{
+    lbFrame.innerHTML=`<div class="lb-ph">${lbName}<br>${label}</div>`;
+  }
+  lbCaption.textContent = '';
+  // arrows
+  const multi=total>1;
+  lbPrev.classList.toggle('hidden',!multi);
+  lbNext.classList.toggle('hidden',!multi);
+  // dots
+  lbDots.innerHTML='';
+  if(multi){for(let i=0;i<total;i++){const d=document.createElement('div');d.className='dot'+(i===lbIdx?' active':'');d.addEventListener('click',()=>{lbIdx=i;lbRender();});lbDots.appendChild(d);}}
+}
+function openLightbox(name,images,startIdx){
+  lbName=name;
+  lbImages=(images && images.length)?images:[''];
+  lbIdx=startIdx||0;
+  lbRender();
+  lightbox.classList.add('show');
+  document.body.classList.add('modal-open');
+}
+function closeLightbox(){lightbox.classList.remove('show');if(!modalBack.classList.contains('show'))document.body.classList.remove('modal-open');}
+lbPrev.addEventListener('click',()=>{lbIdx=(lbIdx-1+lbImages.length)%lbImages.length;lbRender();});
+lbNext.addEventListener('click',()=>{lbIdx=(lbIdx+1)%lbImages.length;lbRender();});
+lbClose.addEventListener('click',closeLightbox);
+lightbox.addEventListener('click',e=>{if(e.target===lightbox)closeLightbox();});
+document.addEventListener('keydown',e=>{
+  if(!lightbox.classList.contains('show'))return;
+  if(e.key==='Escape')closeLightbox();
+  if(e.key==='ArrowLeft'&&lbImages.length>1){lbIdx=(lbIdx-1+lbImages.length)%lbImages.length;lbRender();}
+  if(e.key==='ArrowRight'&&lbImages.length>1){lbIdx=(lbIdx+1)%lbImages.length;lbRender();}
+});
+
+const BASE="https://raw.githubusercontent.com/Yam-Y-c/FAteIMG2/refs/heads/main/";
+const charGrid=document.getElementById('charGrid');
+characters.forEach((c,idx)=>{
+  const card=document.createElement('div');
+  card.className='char-card stg';
+  const prof=BASE+c.code+'P.png';
+  card.innerHTML=`
+    <div class="cc-img"><img src="${prof}" alt="${c.name}" loading="lazy"></div>
+    <div class="cc-info">
+      <div class="cc-name">${c.name}</div>
+      <div class="cc-role">${c.role}</div>
+      <div class="cc-more">CLICK TO VIEW →</div>
+    </div>`;
+  card.addEventListener('click',()=>openModal(idx));
+  charGrid.appendChild(card);
+});
+
+const modalBack=document.getElementById('modalBack');
+const modal=document.getElementById('modal');
+function openModal(i){
+  const c=characters[i];
+  const imgs = c.images || [];
+  const prof = BASE+c.code+'P.png';
+  modal.innerHTML=`
+    <div class="modal-top">
+      <button class="modal-close" aria-label="닫기">✕</button>
+      <div class="modal-img" id="modalImgBtn"><img src="${prof}" alt="${c.name}"></div>
+      <div class="modal-headinfo">
+        <div class="modal-name">${c.name}</div>
+        <div class="modal-role">${c.role}</div>
+        <div class="modal-meta"><span><b>나이</b>${c.age}</span><span><b>키</b>${c.height}</span><span><b>능력</b>${c.ability}</span></div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="block">
+        <div class="block-label">성격</div>
+        <div class="persona-row"><span class="pk">대외</span><span class="pv">${c.out}</span></div>
+        <div class="spoiler-toggle"><span class="arr">▾</span> 이면 보기 (스포일러)</div>
+        <div class="inner-box"><div class="inner-content">${c.inner}</div></div>
+      </div>
+      <div class="block">
+        <div class="block-label">능력</div>
+        <div class="ld-box like" style="grid-column:1/-1"><ul>${c.abilityFull.map(a=>`<li>${a}</li>`).join('')}</ul></div>
+      </div>
+      <div class="block">
+        <div class="block-label">배경</div>
+        <div class="bg-text">${c.bg}</div>
+      </div>
+      <div class="block">
+        <div class="block-label">주요 관계</div>
+        ${relMap(c)}
+      </div>
+      <div class="block">
+        <div class="block-label">취향</div>
+        <div class="ld-grid">
+          <div class="ld-box like"><div class="ld-h">♥ 좋아하는 것</div><ul>${c.likes.map(l=>`<li>${l}</li>`).join('')}</ul></div>
+          <div class="ld-box hate"><div class="ld-h">✕ 싫어하는 것</div><ul>${c.hates.map(h=>`<li>${h}</li>`).join('')}</ul></div>
+        </div>
+      </div>
+      <div class="block">
+        <div class="block-label">대표 대사</div>
+        <div class="bg-text" style="font-family:var(--serif-disp);font-style:italic;color:rgba(244,200,218,0.6)">준비중</div>
+      </div>
+    </div>`;
+  // spoiler
+  const sp=modal.querySelector('.spoiler-toggle');
+  const ib=modal.querySelector('.inner-box');
+  sp.addEventListener('click',()=>{ib.classList.toggle('open');sp.querySelector('.arr').style.transform=ib.classList.contains('open')?'rotate(180deg)':'rotate(0)';});
+  modal.querySelector('.modal-close').addEventListener('click',closeModal);
+  const mImg=modal.querySelector('#modalImgBtn');
+  mImg.addEventListener('click',()=>openLightbox(c.name+' 프로필', [prof]));
+  modalBack.classList.add('show');
+  document.body.classList.add('modal-open');
+  modalBack.scrollTop=0;
+}
+function closeModal(){modalBack.classList.remove('show');document.body.classList.remove('modal-open');}
+modalBack.addEventListener('click',e=>{if(e.target===modalBack)closeModal();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+
+// NPC data
+const npcs = [
+  {name:"발탄 카르도", role:"제1기사단장", images:["https://raw.githubusercontent.com/Yam-Y-c/FAteIMG2/refs/heads/main/VCP.png"],
+   desc:"실력만이 전부인 1기단의 극단적 능력주의 문화를 만든 장본인. 가벼운 성격에 카리스마를 갖췄으며, 제라스의 망나니 같은 행동도 성장 가능성을 보고 눈감아 준다.",
+   tags:["소드마스터(上)","실버 오러","제라스의 직속 상관"]},
+  {name:"세드릭 폰 스피나", role:"스피나 제국의 황제", images:["https://raw.githubusercontent.com/Yam-Y-c/FAteIMG2/refs/heads/main/SDP.png"],
+   desc:"차가운 겉모습 안에 따뜻함을 품은 황제. 상벌이 분명한 능력주의자로, 지략과 정치를 앞세우고 무력은 기사단으로 보완한다. 유능한 아군에겐 관대하나 적과 무능에게는 가차 없다.",
+   tags:["소드 익스퍼트(中)","레드 오러","지략·정치 중심"]},
+  {name:"벨프리온 모르테", role:"실베른의 스승 · 전설의 흑마법사", images:["https://raw.githubusercontent.com/Yam-Y-c/FAteIMG2/refs/heads/main/BPP.png"],
+   desc:"기행과 잔혹함, 극단적 실용주의로 광인 취급을 받는 전설적 흑마법사. 처음엔 실베른을 이용하려 했으나 끝내 진심으로 아끼게 되었다.",
+   tags:["흑마법 9서클","영혼 → 새 육체","실베른의 스승이자 아버지"]},
+  {name:"에밀 디에르", role:"마탑 수석 마법사", images:["https://raw.githubusercontent.com/Yam-Y-c/FAteIMG2/refs/heads/main/EMP.png"],
+   desc:"사실상의 부탑주. 아르센을 대신해 실질적으로 마탑을 운영하는 실무형 엘리트로, 깔끔하고 유능하다. 귀찮은 일을 떠넘기는 아르센에게 복잡한 감정을 품고 있다.",
+   tags:["마나 8서클","바이올렛 마력","실무 총괄"]},
+  {name:"칼리", role:"티에르의 정령 · 안개", images:["https://raw.githubusercontent.com/Yam-Y-c/FAteIMG2/refs/heads/main/KLSH.png","https://raw.githubusercontent.com/Yam-Y-c/FAteIMG2/refs/heads/main/KLHP.png"],
+   desc:"네 살의 티에르를 거두어 함께한 오래된 안개의 정령. 과묵하고 무뚝뚝하지만 티에르를 헌신적으로 지키고 뒷일을 묵묵히 수습한다. 루루의 무조건적 긍정엔 한숨을 쉬곤 한다.",
+   tags:["안개 기반 정령","변신·위장·도주","티에르의 유일한 가족"]},
+  {name:"루루 (루펠)", role:"티에르의 정령 · 시공간", images:["https://raw.githubusercontent.com/Yam-Y-c/FAteIMG2/refs/heads/main/RUSH.png","https://raw.githubusercontent.com/Yam-Y-c/FAteIMG2/refs/heads/main/RUHP.png"],
+   desc:"티에르를 향한 무조건적 긍정으로 가득한 시공간의 정령. 응원 대장이자 티에르의 철없음과 높은 자존감의 원천. 칼리의 한숨에 늘 티에르 편을 들며 맞선다.",
+   tags:["시공간 기반 정령","시간·공간 조작","무조건적 응원"]}
+];
+
+const npcGrid=document.getElementById('npcGrid');
+npcs.forEach(n=>{
+  const card=document.createElement('div');
+  card.className='npc-card stg';
+  const nimgs=n.images||[];
+  const nbadge = nimgs.length>1 ? `<span class="img-multi-badge">+${nimgs.length}</span>` : '';
+  card.innerHTML=`
+    <div class="npc-head">
+      <div class="npc-img" style="position:relative"><img src="${nimgs[0]}" alt="${n.name}" loading="lazy">${nbadge}</div>
+      <div class="npc-headinfo">
+        <div class="npc-name">${n.name}</div>
+        <div class="npc-role">${n.role}</div>
+      </div>
+    </div>
+    <div class="npc-body">
+      <div class="npc-desc">${n.desc}</div>
+      <div class="npc-tags">${n.tags.map(t=>`<span>${t}</span>`).join('')}</div>
+    </div>`;
+  card.querySelector('.npc-img').addEventListener('click',()=>openLightbox(n.name, nimgs));
+  npcGrid.appendChild(card);
+});
+
+// gallery
+const galTabs=['전체',...characters.map(c=>c.name)];
+const galNav=document.getElementById('galNav');
+const galleryGrid=document.getElementById('galleryGrid');
+const hsceneGrid=document.getElementById('hsceneGrid');
+const hsceneWrap=document.getElementById('hsceneWrap');
+const hsceneBox=document.getElementById('hsceneBox');
+const hsceneToggle=document.getElementById('hsceneToggle');
+function buildUrls(code,kind){
+  // kind: 'normal' -> code1..code10 ; 'h' -> codeH1..codeH10
+  const arr=[];
+  for(let i=1;i<=10;i++){arr.push(BASE+code+(kind==='h'?'H':'')+i+'.png');}
+  return arr;
+}
+function charByName(name){return characters.find(c=>c.name===name);}
+function renderGallery(tab){
+  galleryGrid.innerHTML='';
+  let normalUrls=[], hUrls=[], label='';
+  if(tab==='전체'){
+    // all characters' images combined
+    characters.forEach(c=>{normalUrls=normalUrls.concat(buildUrls(c.code,'normal'));hUrls=hUrls.concat(buildUrls(c.code,'h'));});
+    label='이미지';
+  }else{
+    const c=charByName(tab);
+    normalUrls=buildUrls(c.code,'normal');
+    hUrls=buildUrls(c.code,'h');
+    label=tab;
+  }
+  normalUrls.forEach((u,i)=>{
+    const s=document.createElement('div');s.className='gal-slot';
+    s.innerHTML=`<img src="${u}" alt="${label} ${i+1}" loading="lazy">`;
+    s.addEventListener('click',()=>openLightbox(label+' 이미지', normalUrls, i));
+    galleryGrid.appendChild(s);
+  });
+  // H씬
+  hsceneGrid.innerHTML='';
+  hUrls.forEach((u,i)=>{
+    const s=document.createElement('div');s.className='gal-slot';
+    s.innerHTML=`<img src="${u}" alt="${label} H씬 ${i+1}" loading="lazy">`;
+    s.addEventListener('click',()=>openLightbox(label+' H씬', hUrls, i));
+    hsceneGrid.appendChild(s);
+  });
+  hsceneBox.classList.remove('open');
+  hsceneWrap.classList.remove('open');
+}
+hsceneToggle.addEventListener('click',()=>{
+  hsceneBox.classList.toggle('open');
+  hsceneWrap.classList.toggle('open');
+});
+galTabs.forEach((t,i)=>{
+  const b=document.createElement('button');b.textContent=t;if(i===0)b.classList.add('active');
+  b.addEventListener('click',()=>{galNav.querySelectorAll('button').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderGallery(t);});
+  galNav.appendChild(b);
+});
+renderGallery('전체');
+
+// tabs
+const btns=document.querySelectorAll('nav button');
+const panels=document.querySelectorAll('.panel');
+btns.forEach(b=>b.addEventListener('click',()=>{
+  const t=b.dataset.tab;
+  btns.forEach(x=>x.classList.toggle('active',x===b));
+  panels.forEach(p=>p.classList.toggle('active',p.id===t));
+  const ap=document.getElementById(t);
+  ap.querySelectorAll('.stg').forEach((el,i)=>{el.style.animation='none';el.offsetHeight;el.style.animation='';el.style.animationDelay=(i*0.07)+'s';});
+  window.scrollTo({top:0,behavior:'smooth'});
+}));
+document.querySelectorAll('#world .stg').forEach((el,i)=>el.style.animationDelay=(i*0.08)+'s');
+</script>
+
+</body>
+</html>
